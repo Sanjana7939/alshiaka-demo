@@ -14,27 +14,13 @@ import { ShipmentManagementContext } from '../context/ShipmentManagementContext'
 import { Auth } from 'aws-amplify';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AppConstants, notify } from '../config/app-config';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import SecurityIcon from '@mui/icons-material/Security';
-import EngineeringIcon from '@mui/icons-material/Engineering';
-import DatasetIcon from '@mui/icons-material/Dataset';
 import useBreakpoints from './useBreakPoints';
-import PersonIcon from '@mui/icons-material/Person';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
-import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import { checkRoleAccess } from '../utils';
-import LockPersonIcon from '@mui/icons-material/LockPerson';
-import ViewListIcon from '@mui/icons-material/ViewList';
 import { AppTheme } from '../utils/theme';
 import companyLogo from '../assets/images/logo.png'
 import { UserManagementContext } from '../context/UserManagementContext';
 import { LovContext } from '../context/LovContext';
-
-const getStoreDialog = ({ ...props }) => {
-  console.log('Props', props);
-  props.setOpen(true);
-};
 
 const getItemStyles = (currentPath, path) => ({
   height: '40px',
@@ -65,86 +51,6 @@ export default function Sidebar() {
     isSidebarExpanded, setOpen,
   }), [isSidebarExpanded]);
 
-  const dashboardPermissions = checkRoleAccess('DASHBOARD');
-  const userManagementPermissions = checkRoleAccess('USER MANAGEMENT');
-  const fileUploadPermissions = checkRoleAccess('FILE UPLOAD');
-  const planningPermissions = checkRoleAccess('PLANNING');
-  const logisticsPermissions = checkRoleAccess('LOGISTICS');
-  const securityPermissions = checkRoleAccess('SECURITY');
-  const teamLeaderPermissions = checkRoleAccess('TEAM LEADER');
-
-  const checkPermissions = (permission) => {
-    return permission.read || permission.create || permission.update || permission.delete;
-  }
-
-  const getChildren = () => {
-    let children = [
-      // {
-      //   icon: DriveFolderUploadIcon,
-      //   label: 'File Upload',
-      //   path: '/fileUpload',
-      // },
-      // {
-      //   icon: AutoGraphIcon,
-      //   label: 'Planning',
-      //   path: '/planning',
-      // },
-      // {
-      //   icon: LocalShippingIcon,
-      //   label: 'Logistics',
-      //   path: '/logistics',
-      // },
-      // {
-      //   icon: SecurityIcon,
-      //   label: 'Security',
-      //   path: '/security',
-      // },
-      // {
-      //   icon: EngineeringIcon,
-      //   label: 'Team Leader',
-      //   path: '/teamLeader',
-      // },
-    ]
-
-    if (checkPermissions(fileUploadPermissions)) {
-      children.push({
-        icon: DriveFolderUploadIcon,
-        label: 'File Upload',
-        path: '/fileUpload',
-      })
-    }
-    if (checkPermissions(planningPermissions)) {
-      children.push({
-        icon: AutoGraphIcon,
-        label: 'Planning',
-        path: '/planning',
-      })
-    }
-    if (checkPermissions(logisticsPermissions)) {
-      children.push({
-        icon: LocalShippingIcon,
-        label: 'Logistics',
-        path: '/logistics',
-      })
-    }
-    if (checkPermissions(securityPermissions)) {
-      children.push({
-        icon: SecurityIcon,
-        label: 'Security',
-        path: '/security',
-      })
-    }
-    if (checkPermissions(teamLeaderPermissions)) {
-      children.push({
-        icon: EngineeringIcon,
-        label: 'Team Leader',
-        path: '/teamLeader',
-      })
-    }
-
-    return children;
-  }
-
   const signOut = async () => {
     try {
       await Auth.signOut();
@@ -157,11 +63,6 @@ export default function Sidebar() {
   };
 
   const tools = [
-    //   {
-    //   icon: Store,
-    //   label: 'Store',
-    //   method: getStoreDialog,
-    // }, 
     {
       icon: Logout,
       label: 'Sign Out',

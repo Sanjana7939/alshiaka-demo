@@ -1,21 +1,17 @@
 import React from 'react';
-import { Grid, Stack, Typography } from "@mui/material";
+import { Grid, Stack } from "@mui/material";
 import BasicBars from '../../components/dashboard/barplot';
 import { CircularProgress } from '@mui/material';
 import { AppContext } from '../../context/app-context';
 import { useContext, useEffect, useState } from 'react';
-import ProfileBar from "../../components/profilebar";
 import Search from "../../components/dashboard/search";
-import { dashboard, allstatus } from "../../api/dashboard";
-import { notify, checkRoleAccess } from "../../utils";
+import { dashboard } from "../../api/dashboard";
+import { notify } from "../../utils";
 import { AppConstants } from "../../config/app-config";
 import PieChart from '../../components/dashboard/pieplot'
 import StatusCounts from "../../components/dashboard/statuscounts";
 import ResponsiveAppBar from '../../components/appBar';
-import AccessDenied from '../../components/accessDenied';
 import dayjs from 'dayjs';
-import PlacementProvidedChart from '../../components/dashboard/placementProvidedChart';
-import StatusChart from '../../components/dashboard/statusChart';
 
 const getStartTimeUTC = (_date) => {
     console.log('getStartTimeUTC======', _date)
@@ -48,8 +44,6 @@ const checkDatesValid = (startDate, endDate) => {
 }
 
 export default function Dashboard() {
-    const userPermissions = checkRoleAccess('DASHBOARD');
-
     const { status, category, 
         startDate, endDate,
         dashboardLoading, setDashboardLoading, 
@@ -86,10 +80,6 @@ export default function Dashboard() {
             }
         })()
     }, [dashboardLoading]);
-
-    if (!userPermissions.read) {
-        return <AccessDenied />;
-    }
 
     return (
         <Stack sx={{ width: "100%", alignItems: "center", rowGap: 1, overflowX: 'hidden', overflowY: 'auto', '&::-webkit-scrollbar': { width: '4px' }, '&::-webkit-scrollbar-thumb': { backgroundColor: '#4870D6' } }}>
@@ -135,14 +125,8 @@ export const Summary = ({ barData, pieStats, statusCount, totalContainers, place
                             <PieChart data={pieChartData} totalContainers={totalContainers} />
                         </Grid>
                         <Grid item xs={2} md={1} lg={1}>
-                            <PlacementProvidedChart data={placementProvidedData} />
-                        </Grid>
-                        <Grid item xs={2} md={1} lg={1}>
                             <BasicBars data={barData} />
                         </Grid>
-                        {/* <Grid item xs={2} md={1} lg={1}>
-                            <StatusChart data={barData} />
-                        </Grid> */}
 
                     </Grid>
                 </Stack>

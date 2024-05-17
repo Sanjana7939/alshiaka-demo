@@ -62,7 +62,6 @@ export default function DataScreenTable() {
     const { isXs, isSm, isMd, isLg, isXl } = useBreakpoints();
     const responsiveFontSize = isXs ? "9px" : isSm ? "10px" : isMd ? "11px" : isLg ? "13px" : isXl ? "15px" : "18px";
     const responsiveWidthSize = isXs ? "45px" : isSm ? "55px" : isMd ? "55px" : isLg ? "80px" : isXl ? "150px" : "250px";
-    const userPermissions = checkRoleAccess("LOGISTICS");
 
     const { clearShipmentManagementContext, clearShipmentManagementData, isContainersLoading, setIsContainersLoading,
         containersList, setContainersList,
@@ -310,14 +309,6 @@ export default function DataScreenTable() {
                                                     </IconButton>
                                                 </Tooltip>
                                             </Box>
-                                        
-                                            // <TextField
-                                            //     size='small'
-                                            //     sx={{ maxWidth: '15ch' }}
-                                            //     placeholder={`Filter ${displayName[column]}`}
-                                            //     value={filterHeaderData[column] || ''}
-                                            //     onChange={(e) => handleFilterHeaderDataChange(column, e.target.value)}
-                                            // />
                                         }
                                     </TableCell>
                                 })}
@@ -350,20 +341,6 @@ export default function DataScreenTable() {
                                         </TableSortLabel>
                                     </TableCell>
                                 ))}
-                                {(userPermissions.update || userPermissions.delete) && <TableCell
-                                    key='action'
-                                    style={{
-                                        // backgroundColor: '#4870D6',
-                                        backgroundColor: AppTheme.tableHeaderColor,
-                                        fontSize: responsiveFontSize,
-                                        fontWeight: 'bold',
-                                        height: 0,
-                                        textAlign: 'center',
-                                    }}
-                                >
-                                    Action
-                                </TableCell>
-                                }
                             </TableRow>
 
                         </TableHead>
@@ -437,44 +414,6 @@ export default function DataScreenTable() {
                                                     }
                                             </TableCell>)
                                         })}
-
-                                        {userPermissions.update &&
-                                            <TableCell
-                                                key={`cell-action`}
-                                                sx={{ height: '0px', fontSize: responsiveFontSize }}
-                                                style={{ ...getColumnStyles('action') }}>
-
-                                                {(selectedRow && selectedRow.PK === row.PK) ? (
-                                                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                                        {userPermissions.update &&
-                                                            // <Tooltip title="Save" arrow size='small'>
-                                                            <IconButton onClick={() => handleSaveClick(row)}>
-                                                                <SaveIcon fontSize='small' />
-                                                            </IconButton>
-                                                            // </Tooltip>
-                                                        }
-                                                        {userPermissions.update &&
-                                                            // <Tooltip title="Cancel" arrow size='small'>
-                                                            <IconButton onClick={() => handleDiscardClick()}>
-                                                                <CancelIcon fontSize='small' />
-                                                            </IconButton>
-                                                            // </Tooltip>
-                                                        }
-                                                    </div>
-                                                ) : (
-                                                    <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                                        {userPermissions.update &&
-                                                            // <Tooltip title="Modify" arrow size='small'>
-                                                            <IconButton onClick={() => handleEditClick(row)}>
-                                                                <EditIcon fontSize='small' />
-                                                            </IconButton>
-                                                            // </Tooltip>
-                                                        }
-                                                    </div>
-                                                )}
-
-                                            </TableCell>
-                                        }
 
                                     </TableRow>
                                 ))}

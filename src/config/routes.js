@@ -3,19 +3,11 @@ import { Outlet, createBrowserRouter } from 'react-router-dom';
 import { Box, Stack, CircularProgress } from '@mui/material';
 import Sidebar from '../components/sidebar';
 import Dashboard from '../pages/dashboard/index';
-import User from '../pages/user/index'
-import Role from '../pages/roles/index'
 import { getRoleByRoleId, getUserById } from '../api/index'
-import { notify, checkRoleAccess } from '../utils';
+import { notify } from '../utils';
 import { AppConstants } from './app-config';
 import { Auth } from 'aws-amplify';
 import { AppContext } from '../context/app-context';
-import PlanningScreen from '../pages/planningScreen';
-import LogisticsScreen from '../pages/logisticsScreen';
-import SecurityScreen from '../pages/securityScreen';
-import TeamLeaderScreen from '../pages/teamLeaderScreen';
-import FileUploadScreen from '../pages/fileUploadScreen';
-import LOV from '../pages/lov';
 import DataScreen from '../pages/dataScreen';
 
 const AppLayout = () => {
@@ -23,6 +15,7 @@ const AppLayout = () => {
   const [userRoleManagement, setUserRoleManagement] = React.useState([])
   const { clearAppContext } = React.useContext(AppContext)
   const [isApplicationLoaded, setIsApplicationLoaded] = React.useState(false);
+  
   const handleSignOut = async () => {
     try {
       await Auth.signOut();
@@ -105,38 +98,6 @@ export const routes = [
   {
     path: '/dashboard',
     element: <Dashboard/>,
-  },
-  {
-    path: '/user',
-    element: <User />,
-  },
-  {
-    path: '/role',
-    element: <Role />,
-  },
-  {
-    path: '/planning',
-    element: <PlanningScreen />,
-  },
-  {
-    path: '/logistics',
-    element: <LogisticsScreen />,
-  },
-  {
-    path: '/security',
-    element: <SecurityScreen />,
-  },
-  {
-    path: '/teamLeader',
-    element: <TeamLeaderScreen />,
-  },
-  {
-    path: '/fileUpload',
-    element: <FileUploadScreen />,
-  },
-  {
-    path: '/lov',
-    element: <LOV />,
   },
   {
     path: '/data',
