@@ -1,2 +1,1 @@
-# Inbound-Planning-UI
-Inbound Planning Application UI
+# Alshiaka-Demo-UI
