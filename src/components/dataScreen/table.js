@@ -1,52 +1,30 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import dayjs from 'dayjs';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { notify, stableSort, getComparator, ScrollbarDesign, checkRoleAccess } from '../../utils/index';
+import { notify, stableSort, getComparator, ScrollbarDesign } from '../../utils/index';
 import { useContext } from 'react';
 import { AppConstants } from '../../config/app-config';
-import { AppContext } from '../../context/app-context';
-import { CircularProgress, Stack, Tooltip, Typography, MenuItem, Select, Input, TextField, LinearProgress, Skeleton, Button, FormGroup, FormControlLabel, Switch, Box, InputAdornment, Autocomplete } from '@mui/material';
+import { Stack, Tooltip, TextField, Button, Box, InputAdornment } from '@mui/material';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import IconButton from '@mui/material/IconButton';
-import EditIcon from '@mui/icons-material/Edit';
-import CancelIcon from '@mui/icons-material/Cancel';
-import SaveIcon from '@mui/icons-material/Save';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import ProfileBar from '../profilebar';
 import useBreakpoints from '../../components/useBreakPoints';
 import { ShipmentManagementContext } from '../../context/ShipmentManagementContext';
-import Header from '../header';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import LinearProgressSkeleton from '../loadingScreens';
-import { listShipments, updateContainer } from '../../api/shipmentManagement';
-import { lovEntityType } from '../../api/pod';
 import { BootstrapTooltip } from '../styledToolTips/BootstrapTooltip';
-import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
-import DensityMediumIcon from '@mui/icons-material/DensityMedium';
-import DensitySmallIcon from '@mui/icons-material/DensitySmall';
-import BrowserUpdatedIcon from '@mui/icons-material/BrowserUpdated';
 import TableRowsIcon from '@mui/icons-material/TableRows';
-import { AccountCircle } from '@mui/icons-material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ClearIcon from '@mui/icons-material/Clear';
-import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import { isLongString, renderTableCell, getColumnStyles, getFilteredData, getEntityDesc, fieldValidation } from '../../utils/shipmentManagement';
+import { isLongString, renderTableCell, getColumnStyles, getFilteredData } from '../../utils/shipmentManagement';
 import { AppTheme } from '../../utils/theme';
 import ActionButtonsGroup from '../shipmentComponents/ActionButtonsGroup';
+import { listData } from '../../api/dataApi';
 
-const FILTER_COLUMNS = ['container_id', 'mode', 'status', 'asn_no', 'facility_id', 'location', 'dock']
-const SHIPMENT_TYPE = 'logistics';
-
+const FILTER_COLUMNS = ['store_no', 'status']
 
 export default function DataScreenTable() {
     const [page, setPage] = useState(0);
@@ -78,35 +56,18 @@ export default function DataScreenTable() {
         (async () => {
             try {
                 if (isContainersLoading) {
-                    const response = await listShipments(SHIPMENT_TYPE, paginationToken);
+                    const response = await listData();
                     if (response) {
-                        setContainersList(response.data.transfers);
-                        setDisplayName(response.data.display_name)
-                        setDisplayAttribute(response.data.display_attribute);
-                        setStatusAttributes(response.data.status_attributes);
+                        setContainersList(response.transfers);
+                        setDisplayName(response.display_name)
+                        setDisplayAttribute(response.display_attribute);
+                        setStatusAttributes(response.status_attributes);
 
-                        if (response.data.paginationToken) {
-                            setPaginationToken(response.data.paginationToken)
+                        if (response.paginationToken) {
+                            setPaginationToken(response.paginationToken)
                         } else {
                             setPaginationToken(null)
                         }
-                    }
-
-                    if (!dockList || dockList.length === 0) {
-                        const lovResponse = await lovEntityType('DOCK');
-                        setDockList(lovResponse.entities)
-                    }
-                    if (!dcList || dcList.length === 0) {
-                        const lovResponse = await lovEntityType('DC');
-                        setDcList(lovResponse.entities)
-                    }
-                    if (!facilityList || facilityList.length === 0) {
-                        const lovResponse = await lovEntityType('WH');
-                        setFacilityList(lovResponse.entities)
-                    }
-                    if (!transporterList || transporterList.length === 0) {
-                        const lovResponse = await lovEntityType('TRANSPORTER');
-                        setTransporterList(lovResponse.entities)
                     }
                 }
             } catch (e) {
@@ -158,76 +119,21 @@ export default function DataScreenTable() {
         return null;
     }
 
-    const handleEditClick = (row) => {
-        setSelectedRow({ ...row, transporter: getTransporter(row.transporter) });
-    };
-
-    const handleDiscardClick = () => {
-        setSelectedRow(null);
-    };
-
-    const handleChange = (field, value) => {
-        setSelectedRow((prevValues) => ({
-            ...prevValues,
-            [field]: value,
-        }));
-    };
-
-    const isRowSelected = (PK) => {
-        return (selectedRow && selectedRow.PK === PK)
-    }
-
-    const handleSaveClick = async (row) => {
-        const { transporter } = selectedRow;
-
-        if (!fieldValidation({ transporter }, displayName)) {
-            return;
-        }
-
-        try {
-            setRequestLoading(true);
-
-            const username = 'ADMIN'
-
-            const updateData = {
-                container_id: row.container_id,
-                facility_id: row.facility_id,
-                container_type: row.upload_type,
-                user_id: username,
-                update_type: 'LOGISTICS',
-                transporter: transporter.entityID,
-            }
-
-            console.log('updateData', updateData);
-
-            const response = await updateContainer(updateData);
-            notify(AppConstants.SUCCESS, response.message);
-            setIsContainersLoading(true);
-            setSelectedRow(null);
-            // setFilterHeaderData({});
-            setPaginationToken(null);
-        } catch (error) {
-            notify(AppConstants.ERROR, error);
-        } finally {
-            setRequestLoading(false);
-        }
-    };
-
     const loadMoreData = async () => {
         try {
-            setRequestLoading(true);
-            const response = await listShipments(SHIPMENT_TYPE, paginationToken);
+            // setRequestLoading(true);
+            // const response = await listShipments(SHIPMENT_TYPE, paginationToken);
 
-            setContainersList((prev) => {
-                let data = [...prev];
-                return data.concat(response.data.transfers);
-            });
+            // setContainersList((prev) => {
+            //     let data = [...prev];
+            //     return data.concat(response.data.transfers);
+            // });
 
-            if (response.data.paginationToken) {
-                setPaginationToken(response.data.paginationToken)
-            } else {
-                setPaginationToken(null)
-            }
+            // if (response.data.paginationToken) {
+            //     setPaginationToken(response.data.paginationToken)
+            // } else {
+            //     setPaginationToken(null)
+            // }
         } catch (e) {
             notify(AppConstants.ERROR, e);
         } finally {
@@ -252,12 +158,12 @@ export default function DataScreenTable() {
         if (!filteredData) {
             return;
         }
-        setFilteredData(getFilteredData(containersList, filterHeaderData, statusAttributes, dcList, dockList, facilityList));
+        setFilteredData(getFilteredData(containersList, filterHeaderData, statusAttributes));
     }, [filterHeaderData, containersList]);
 
     return (
-        // sx={{ width: "100%", height: "100%" }}
-        <Stack sx={{ width: "100%", alignItems: "center", overflowY: 'auto', ...ScrollbarDesign }} >
+        // <Stack sx={{ width: "100%", alignItems: "center", overflowY: 'auto', ...ScrollbarDesign }} >
+        <Stack sx={{ width: "100%", alignItems: "center", ...ScrollbarDesign }} >
 
             <ActionButtonsGroup
                 isTableDense={isTableDense}
@@ -267,7 +173,7 @@ export default function DataScreenTable() {
             {/* sx={{ width: '100%', overflow: 'hidden', display: 'flex', flexDirection: 'column' }} */}
             <Paper square sx={{ width: '100%' }}>
                 <TableContainer sx={{ ...ScrollbarDesign }}>
-                    <Table sx={{ width: 'max-content' }} stickyHeader size={isTableDense ? 'small' : ''} >
+                    <Table stickyHeader size={isTableDense ? 'small' : ''} >
 
                         <TableHead>
                             <TableRow>
@@ -365,34 +271,6 @@ export default function DataScreenTable() {
                                                         <span style={{ background: statusAttributes[row[column]].color, color: 'white', borderRadius: '3px', padding: '2px' }}>
                                                             { renderTableCell(column, statusAttributes[row[column]].description) }
                                                         </span>
-                                                </TableCell>)
-                                            }
-
-                                            if (column === 'transporter' && isRowSelected(row.PK)) {
-                                                return (<TableCell
-                                                    key={`cell-${columnIndex}`}
-                                                    sx={{ height: '0px', fontSize: responsiveFontSize }}
-                                                    style={{ ...getColumnStyles(column) }}
-                                                >
-                                                    <Autocomplete
-                                                        sx={{ width: '20ch' }}
-                                                        value={selectedRow[column] || null}
-                                                        onChange={(e, newValue) => handleChange(column, newValue)}
-                                                        options={transporterList}
-                                                        getOptionLabel={(option) => option.entityDesc}
-                                                        renderInput={(params) => <TextField {...params} variant="standard" size='small' />}
-                                                    />
-                                                </TableCell>)
-                                            }
-
-                                            if (column === 'facility_id' || column === 'location' || column === 'dock' || (column === 'transporter' && !isRowSelected(row.PK))) {
-                                                return (<TableCell 
-                                                    key={`cell-${columnIndex}`}
-                                                    sx={{ height: '0px', fontSize: responsiveFontSize }}
-                                                    style={{ 
-                                                        ...getColumnStyles(column),
-                                                    }}>
-                                                        { renderTableCell(column, getEntityDesc(column, row[column], dcList, dockList, facilityList, transporterList)) }
                                                 </TableCell>)
                                             }
 

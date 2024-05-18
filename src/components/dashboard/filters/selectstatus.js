@@ -9,7 +9,6 @@ import { AppConstants } from '../../../config/app-config';
 import { AppContext } from '../../../context/app-context';
 import { notify } from '../../../utils';
 import useBreakpoints from '../../useBreakPoints';
-import { fileUploadLov } from '../../../api/shipmentManagement';
 
 export default function SelectStatus() {
   const { status, setStatus } = useContext(AppContext);
@@ -24,16 +23,6 @@ export default function SelectStatus() {
     // if (isXl) return '200px';
     return '200px'; // default width
   };
-  useEffect(() => {
-    fileUploadLov('STATUSES')
-      .then(response => {
-        setStatusOptions(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching data from fileUploadLov API:', error);
-        notify(AppConstants.ERROR, 'Error fetching STATUSES');
-      });
-  }, []);
 
   // Adding "All" option to the dropdown
   const allOption = (

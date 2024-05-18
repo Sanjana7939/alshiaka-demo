@@ -52,14 +52,5 @@ export const ScrollbarDesign = {
   }
 }
 
-export const checkRoleAccess = (operationDesc) => {
-  return {
-    create: true,
-    read: true,
-    update: true,
-    delete: true,
-  };
-};
-
 
 export const muiDateFormat = "DD/MM/YY hh:mm A"

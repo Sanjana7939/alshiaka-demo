@@ -30,7 +30,7 @@ export default function PieArcLabel({ data, totalContainers }) {
       pt="2vh"
     >
       <Typography sx={{ fontSize: 20, fontWeight: 'bold', color: '#3f3f3f', textAlign: 'center', mb: 1 }} >
-        Total containers: {totalContainers}
+        Total stores: {totalContainers}
       </Typography>
       <PieChart
         position="center"

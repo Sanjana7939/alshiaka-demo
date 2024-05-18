@@ -16,17 +16,10 @@ export default function ResponsiveAppBar({ title }) {
   useEffect(() => {
     (async () => {
       try {
-        if (!userRoleId) {
-          setUserRoleId(localStorage.getItem('userRoleId'))
-        }
         if (!user) {
-          const localStorageUser = localStorage.getItem('userName');
-          if (localStorageUser) {
-            setUser(localStorageUser);
-          } else {
-            const username = 'ADMIN'
-            setUser(username);
-            localStorage.setItem("userName", username);
+          const authData = JSON.parse(localStorage.getItem('auth'));
+          if (authData) {
+            setUser(authData.username);
           }
         }
       } catch (e) {
@@ -55,7 +48,6 @@ export default function ResponsiveAppBar({ title }) {
         {user && (
           <div style={{display: 'flex', flexDirection: 'column'}}>
             <Button sx={{ m: 0, p: 0, color: AppTheme.fontColor }}><AccountCircle /> {user}</Button>
-            <Button sx={{ color: AppTheme.fontGrey, m: 0, p: 0, fontSize: 12 }}>{userRoleId}</Button>
           </div>
         )}
       </Toolbar>

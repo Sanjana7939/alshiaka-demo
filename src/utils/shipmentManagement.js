@@ -63,7 +63,7 @@ export const getColumnStyles = (column) => {
     }
 };
 
-export const getFilteredData = (containersList, filterHeaderData, statusAttributes, dcList, dockList, facilityList) => {
+export const getFilteredData = (containersList, filterHeaderData, statusAttributes) => {
     const data = containersList.filter((row) => {
         let flag = true;
         for (let key in filterHeaderData) {

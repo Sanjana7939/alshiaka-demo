@@ -15,11 +15,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { AppConstants, notify } from '../config/app-config';
 import useBreakpoints from './useBreakPoints';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
-import { checkRoleAccess } from '../utils';
 import { AppTheme } from '../utils/theme';
-import companyLogo from '../assets/images/logo.png'
-import { UserManagementContext } from '../context/UserManagementContext';
-import { LovContext } from '../context/LovContext';
+import companyLogo from '../assets/images/alshiaka.png'
+
 
 const getItemStyles = (currentPath, path) => ({
   height: '40px',
@@ -38,9 +36,7 @@ export default function Sidebar() {
   const location = useLocation();
   const { isXs, isSm, isMd, isLg, isXl } = useBreakpoints();
   const { isSidebarExpanded, clearAppContext, setDashboardLoading, setRolesLoading } = useContext(AppContext);
-  const { clearUserManagementContext } = useContext(UserManagementContext);
   const { clearShipmentManagementData } = useContext(ShipmentManagementContext);
-  const { clearLovContext } = useContext(LovContext);
 
   const routeParams = useMemo(() => ({
     navigate, isSidebarExpanded, currentPath, location,
@@ -53,6 +49,8 @@ export default function Sidebar() {
   const signOut = async () => {
     try {
       localStorage.clear();
+      // navigate('/login')
+      window.location.reload()
     } catch (error) {
       notify(AppConstants.ERROR, error.message);
     } finally {
@@ -88,9 +86,7 @@ export default function Sidebar() {
     setDashboardLoading(true)
     setCurrentPath(location.pathname !== '/' ? location.pathname : '/dashboard');
     setRolesLoading(true)
-    clearUserManagementContext()    
     clearShipmentManagementData()
-    clearLovContext()
   }, [location]);
 
   const getSidebarStyles = ({ isSidebarExpanded }) => ({

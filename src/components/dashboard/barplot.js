@@ -73,7 +73,7 @@ export default function BasicBars({ data }) {
       pt="2vh"
     >
       <Typography sx={{ fontSize: 20, fontWeight: 'bold', color: '#3f3f3f', textAlign: 'center', mb: 1}}>
-        Containers per STATUS
+        Stores per STATUS
       </Typography>
 
       <BarChart

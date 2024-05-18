@@ -5,7 +5,7 @@ import { CircularProgress } from '@mui/material';
 import { AppContext } from '../../context/app-context';
 import { useContext, useEffect, useState } from 'react';
 import Search from "../../components/dashboard/search";
-import { dashboard } from "../../api/dashboard";
+import { dashboardDataApi } from "../../api/dashboardApi";
 import { notify } from "../../utils";
 import { AppConstants } from "../../config/app-config";
 import PieChart from '../../components/dashboard/pieplot'
@@ -67,7 +67,7 @@ export default function Dashboard() {
                         placementProvidedDays: 6,
                     };
                     console.log("Dashboard REQUES", data);
-                    const response = await dashboard(data);
+                    const response = await dashboardDataApi(data);
                     setDashboardData(response.data);
                 }
             } catch (e) {

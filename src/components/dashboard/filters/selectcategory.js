@@ -5,10 +5,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { Stack } from '@mui/material';
 import { AppContext } from '../../../context/app-context';
-import { AppConstants } from '../../../config/app-config';
-import { notify } from '../../../utils';
 import useBreakpoints from '../../useBreakPoints';
-import { fileUploadLov } from '../../../api/shipmentManagement';
 
 export default function SelectCategory() {
   const { category, setCategory } = useContext(AppContext);
@@ -23,18 +20,6 @@ export default function SelectCategory() {
     // if (isXl) return '200px';
     return '200px'; // default width
   };
-
-  useEffect(() => {
-    fileUploadLov('FLTYPES')
-      .then(response => {
-        console.log("lov all category===========", response);
-        setDropdownOptions(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching data from fileUploadLov API:', error);
-        notify(AppConstants.ERROR, 'Error fetching FLTYPES');
-      });
-  }, []);
 
 
   // Adding "ALL" option to the dropdown
