@@ -6,7 +6,6 @@ import Dashboard from '../pages/dashboard/index';
 import { getRoleByRoleId, getUserById } from '../api/index'
 import { notify } from '../utils';
 import { AppConstants } from './app-config';
-import { Auth } from 'aws-amplify';
 import { AppContext } from '../context/app-context';
 import DataScreen from '../pages/dataScreen';
 
@@ -17,36 +16,49 @@ const AppLayout = () => {
   const [isApplicationLoaded, setIsApplicationLoaded] = React.useState(false);
   
   const handleSignOut = async () => {
-    try {
-      await Auth.signOut();
-    } catch (error) {
-      notify(AppConstants.ERROR, error.message);
-    } finally {
-      localStorage.clear();
-      clearAppContext();
-    }
+    // try {
+    //   await Auth.signOut();
+    // } catch (error) {
+    //   notify(AppConstants.ERROR, error.message);
+    // } finally {
+    //   localStorage.clear();
+    //   clearAppContext();
+    // }
   }
+
+  // const intialUserDataFetch = async () => {
+  //   try {
+  //     const { username } = await Auth.currentUserInfo();
+  //     console.log("before api call ", username)
+  //     const response = await getUserById({ userIds: username })
+  //     const roleId = response.users[0].roleId
+  //     const roleStatus = response.users[0].roleStatus
+  //     if (roleStatus !== "INVALID") {
+  //       localStorage.setItem("roleStatus", roleStatus)
+  //       const roleResponse = await getRoleByRoleId({ roleIds: roleId })
+  //       console.log(roleResponse)
+  //       localStorage.setItem("userRoleManagement", JSON.stringify(roleResponse))
+  //       localStorage.setItem("userRoleId", roleId)
+  //       setUserRoleManagement(roleResponse)
+  //       setIsApplicationLoaded(true);
+  //     } else {
+  //       notify(AppConstants.ERROR, `${username} is INVALID, Contact to admin`)
+  //       handleSignOut();
+  //       setIsApplicationLoaded(false);
+  //     }
+  //   } catch (e) {
+  //     setIsApplicationLoaded(false);
+  //     throw(e)
+  //   }
+  // }
 
   const intialUserDataFetch = async () => {
     try {
-      const { username } = await Auth.currentUserInfo();
-      console.log("before api call ", username)
-      const response = await getUserById({ userIds: username })
-      const roleId = response.users[0].roleId
-      const roleStatus = response.users[0].roleStatus
-      if (roleStatus !== "INVALID") {
-        localStorage.setItem("roleStatus", roleStatus)
-        const roleResponse = await getRoleByRoleId({ roleIds: roleId })
-        console.log(roleResponse)
-        localStorage.setItem("userRoleManagement", JSON.stringify(roleResponse))
-        localStorage.setItem("userRoleId", roleId)
-        setUserRoleManagement(roleResponse)
-        setIsApplicationLoaded(true);
-      } else {
-        notify(AppConstants.ERROR, `${username} is INVALID, Contact to admin`)
-        handleSignOut();
-        setIsApplicationLoaded(false);
-      }
+      const username = 'admin'
+      const roleId = 'admin'
+      setIsApplicationLoaded(true);
+
+      localStorage.setItem("username", username)
     } catch (e) {
       setIsApplicationLoaded(false);
       throw(e)

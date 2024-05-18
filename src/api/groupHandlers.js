@@ -1,13 +1,9 @@
-import { Auth } from "aws-amplify";
-
 export const createAuthenticationHeaderForApi = async () => {
   try {
-    const session = await Auth.currentSession();
-    const token = session.idToken.jwtToken;
-
+    const token = 'Bearer eyJraWQiOiJYWUd2QkQ5cHlSczZiYnBoclBSNEprUjdERVYxY2daZHB5MUZ5elFpQXYwPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI2ODhhMzQ0My0xNDBiLTRmNzYtODQyZS1mMDkzMDQ5MDc4ODEiLCJpc3MiOiJodHRwczpcL1wvY29nbml0by1pZHAuYXAtc291dGgtMS5hbWF6b25hd3MuY29tXC9hcC1zb3V0aC0xX1VrWGE1V0thcCIsImNvZ25pdG86dXNlcm5hbWUiOiJhZG1pbiIsIm9yaWdpbl9qdGkiOiI1NGU2YjIwNi04N2VhLTQ3OGUtOTExZC02MWVjZmE2M2JhNGYiLCJhdWQiOiI2ZWt0Ym9lZTRycHF2Y2oxaGltMnFwN2Y2NiIsImV2ZW50X2lkIjoiYWZjODJkM2ItODE3MC00NWM1LTk5YjAtNzcwZTE0NmE0YzNmIiwidG9rZW5fdXNlIjoiaWQiLCJhdXRoX3RpbWUiOjE3MTU5Mzk1MjEsImV4cCI6MTcxNjAxOTI1NywiaWF0IjoxNzE2MDE1NjU3LCJqdGkiOiJiNzBiN2M3OS05YjdiLTRiMzQtOGM5ZS0wZjdlMmVkYzFjMGMiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSJ9.qqMPi7XRjZmQGTU8m_BEFqyNDEY7b11BAX1eG5_m1aeNkcU1orvUCYysvFrHYK2pNN9cdwGS0LkYkDneSWymBEYO941cnQgj_uYaLpU6RlL12G7QpkV365Sf5b8P3EePQnO-o3uvYdjUDXqit3gdQLKTUSslVlBUO1bGf564OWAQs6Xw4MsiXIHaTYjASswhXcqTNaU9GKvHIqO6Hdom61mxkOtXJwle10yKfGUmXNzy1T-Xg2hmv2FxMuhkg_Yr5wBQkchmsiz2qKjB-0R-Em3n6PD9GJWiTpWn80BX-hrQ0LzHDOALR92qw4ziC1e8apUPlWwQ6JjU14qA2W4aOg'
     return {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: token,
       },
     };
   } catch (e) {

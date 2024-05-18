@@ -6,7 +6,6 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import { AppContext } from '../../context/app-context';
-import { Auth } from 'aws-amplify';
 import { AppTheme } from '../../utils/theme';
 import { Button } from '@mui/material';
 import { AppConstants } from '../../config/app-config';
@@ -25,7 +24,7 @@ export default function ResponsiveAppBar({ title }) {
           if (localStorageUser) {
             setUser(localStorageUser);
           } else {
-            const { username } = await Auth.currentUserInfo();
+            const username = 'ADMIN'
             setUser(username);
             localStorage.setItem("userName", username);
           }

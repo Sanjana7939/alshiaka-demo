@@ -6,7 +6,6 @@ import { AppTheme } from '../utils/theme';
 import { AppConstants } from '../config/app-config';
 import { AppContext } from '../context/app-context';
 import { notify } from '../utils';
-import { Auth } from 'aws-amplify';
 import Header from './header';
 
 export default function ProfileBar() {
@@ -28,8 +27,7 @@ export default function ProfileBar() {
     useEffect(() => {
         (async () => {
             try {
-                const { username } = await Auth.currentUserInfo();
-                localStorage.setItem("userName", username)
+                localStorage.setItem("userName", 'ADMIN')
                 setUser(localStorage.getItem("userName"));
             } catch (e) {
                 notify(AppConstants.ERROR, e.msg);

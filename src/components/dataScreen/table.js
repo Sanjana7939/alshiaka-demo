@@ -29,7 +29,6 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import LinearProgressSkeleton from '../loadingScreens';
 import { listShipments, updateContainer } from '../../api/shipmentManagement';
 import { lovEntityType } from '../../api/pod';
-import { Auth } from 'aws-amplify';
 import { BootstrapTooltip } from '../styledToolTips/BootstrapTooltip';
 import FilterAltOffIcon from '@mui/icons-material/FilterAltOff';
 import DensityMediumIcon from '@mui/icons-material/DensityMedium';
@@ -188,7 +187,7 @@ export default function DataScreenTable() {
         try {
             setRequestLoading(true);
 
-            const { username } = await Auth.currentUserInfo();
+            const username = 'ADMIN'
 
             const updateData = {
                 container_id: row.container_id,

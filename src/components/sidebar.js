@@ -11,7 +11,6 @@ import {
 import { AppContext } from '../context/app-context';
 import { ShipmentManagementContext } from '../context/ShipmentManagementContext';
 
-import { Auth } from 'aws-amplify';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AppConstants, notify } from '../config/app-config';
 import useBreakpoints from './useBreakPoints';
@@ -53,7 +52,7 @@ export default function Sidebar() {
 
   const signOut = async () => {
     try {
-      await Auth.signOut();
+      localStorage.clear();
     } catch (error) {
       notify(AppConstants.ERROR, error.message);
     } finally {
