@@ -49,7 +49,7 @@ import {
             level={4}
             textAlign="center"
           >
-            Inbound Planning System
+            Alshiaka Demo
           </Heading>
         );
       },
