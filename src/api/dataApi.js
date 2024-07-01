@@ -1,6 +1,6 @@
 import axios from "axios";
 import { processError } from "./utils";
-
+//Imports the axios library for making HTTP requests and the processError function from a local "./utils" module.
 const display_attribute = [
   "store_no",
   "reg_no",
@@ -11,7 +11,7 @@ const display_attribute = [
   "xcenter_trans_no",
   "runtime",
 ];
-
+//Defines an array display_attribute containing the names of attributes to be displayed.
 const display_name = {
   store_no: "Store No",
   reg_no: "Reg No",
@@ -22,7 +22,7 @@ const display_name = {
   xcenter_trans_no: "Xcenter Trans No",
   runtime: "Runtime",
 };
-
+//Defines an object display_name mapping attribute names to their display names.
 const status_attributes = {
   N: {
     description: "Data Not Synced",
@@ -33,7 +33,7 @@ const status_attributes = {
     color: "green",
   },
 };
-
+//Defines an object status_attributes mapping status values ("N" and "Y") to their descriptions and colors.
 function mapBackendStatus(status) {
   if (status === 1) {
     return "Y";
@@ -43,6 +43,7 @@ function mapBackendStatus(status) {
     throw new Error("Invalid status received from backend");
   }
 }
+//Defines a function mapBackendStatus to convert backend status values (0 and 1) to human-readable status values ("N" and "Y").
 
 export const listData = async (filterStatus) => {
   try {
@@ -52,6 +53,8 @@ export const listData = async (filterStatus) => {
       }`
     );
     console.log("Fetched Data:", response.data); // Log the fetched data
+    //Defines an async function listData that fetches data from an API based on a filter status.
+    // It constructs the URL with the filter status if provided and makes an HTTP GET request to fetch the data.
 
     const transformedData = response.data.data[0].map((item) => {
       return {
@@ -69,7 +72,8 @@ export const listData = async (filterStatus) => {
         runtime: "runtime",
       };
     });
-
+    //Logs the fetched data and maps the fetched data into a transformed format suitable for display.
+    //It uses mapBackendStatus to convert status values and, formats dates.
     const data = {
       display_attribute,
       display_name,
@@ -79,10 +83,18 @@ export const listData = async (filterStatus) => {
       status: "OK",
     };
     return data;
+// Creates an object data that encapsulates the processed data and metadata.
+// display_attribute, display_name, and status_attributes are included as part of the structured data.
+// transfers holds the transformed data ready for display.
+// message is populated with a message extracted from the response data.
+// status: "OK" indicates the success status of the data retrieval.
+
   } catch (error) {
     console.error("listData error:", error.response);
     const errorMessage = "Error fetching data";
     processError(error, errorMessage);
+    //Logs the error message along with the error response (if available).
+    //Calls the processError function to handle the error with a custom error message.
 
     const errorData = {
       display_attribute,
@@ -92,7 +104,7 @@ export const listData = async (filterStatus) => {
       message: errorMessage,
       status: "Failed",
     };
-
+    //errorData object with the same structure as data but with specific error handling details
     throw errorData;
   }
 };

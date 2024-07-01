@@ -1,8 +1,4 @@
 import * as React from "react";
-/////////////////////////////////////////////////????????????????????????????????
-//import { ScrollbarDesign } from "src/utils/index"; // Adjust the path as necessary
-
-/////////////////////////////////////////////////????????????????????????????????
 import { useEffect, useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -46,18 +42,22 @@ import ActionButtonsGroup from "../shipmentComponents/ActionButtonsGroup";
 import { listData } from "../../api/dataApi";
 
 const FILTER_COLUMNS = ["store_no", "status"];
+//FILTER_COLUMNS: Defines the columns that are filterable.
 
 export default function DataScreenTable() {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(25);
-  const [order, setOrder] = useState("asc");
-  const [orderBy, setOrderBy] = useState(null);
-  const [selectedRow, setSelectedRow] = useState(null);
-  const [filteredData, setFilteredData] = useState([]);
-  const [filterHeaderData, setFilterHeaderData] = useState({});
-  const [isTableDense, setIsTableDense] = useState(true);
+  const [page, setPage] = useState(0); //Current pagination page, initially set to 0.
+  const [rowsPerPage, setRowsPerPage] = useState(25); //Number of rows to be displayed per page, initially set to 25.
+  const [order, setOrder] = useState("asc"); //order: Sort order of the table, initialized to "asc".
+  const [orderBy, setOrderBy] = useState(null); //orderBy: Column name by which the table is sorted.
+  const [selectedRow, setSelectedRow] = useState(null); //Currently selected row (initially null)
+  const [filteredData, setFilteredData] = useState([]); //Data to be displayed in the table after applying filters
+  const [filterHeaderData, setFilterHeaderData] = useState({}); //Stores the filter criteria for each column.
+  const [isTableDense, setIsTableDense] = useState(true); //Boolean flag to determine if the table is dense (compact).
 
+  //The useBreakpoints hook is used to get the current breakpoint sizes (isXs, isSm, isMd, isLg, isXl),
+  //which help determine the responsive font and width sizes.
   const { isXs, isSm, isMd, isLg, isXl } = useBreakpoints();
+  //responsiveFontSize and responsiveWidthSize are calculated based on the current breakpoint.
   const responsiveFontSize = isXs
     ? "9px"
     : isSm
@@ -81,16 +81,17 @@ export default function DataScreenTable() {
     ? "150px"
     : "250px";
 
+  //Destructures various state and functions from the ShipmentManagementContext
   const {
-    clearShipmentManagementContext,
-    clearShipmentManagementData,
-    isContainersLoading,
-    setIsContainersLoading,
-    containersList,
+    clearShipmentManagementContext, //Methods to clear context data
+    clearShipmentManagementData, //Methods to clear context data
+    isContainersLoading, //State for loading status of containers
+    setIsContainersLoading, //Setter for loading status of containers
+    containersList, //State and setter for the list of containers.
     setContainersList,
-    displayName,
+    displayName, //State and setter for display names.
     setDisplayName,
-    displayAttribute,
+    displayAttribute, //State and setter for display attributes.
     setDisplayAttribute,
     facilityList,
     setFacilityList,
@@ -99,23 +100,27 @@ export default function DataScreenTable() {
     dcList,
     setDcList,
     transporterList,
+    //These pairs manage lists of facilities, docks, distribution centers, and transporters respectively.
     setTransporterList,
-    paginationToken,
+    paginationToken, //State and setter for pagination token used for loading more data
     setPaginationToken,
-    requestLoading,
+    requestLoading, //State and setter for request loading status
     setRequestLoading,
-    statusAttributes,
+    statusAttributes, //State and setter for status attributes, which are used to display the status of items in the table.
     setStatusAttributes,
   } = useContext(ShipmentManagementContext);
 
+  //Asynchronous IIFE (Immediately Invoked Function Expression) that runs when isContainersLoading or requestLoading changes.
   useEffect(() => {
     (async () => {
       try {
         if (isContainersLoading) {
+          //Fetches data if isContainersLoading is true
           const searchParams = new URLSearchParams(window.location.search);
           const status = searchParams.get("status");
-          const response = await listData(status);
+          const response = await listData(status); //Calls listData(status) to fetch data
 
+          //Updates context with the fetched data: setContainersList, setDisplayName, setDisplayAttribute, setStatusAttributes, and setPaginationToken.
           if (response) {
             setContainersList(response.transfers);
             setDisplayName(response.display_name);
@@ -130,8 +135,10 @@ export default function DataScreenTable() {
           }
         }
       } catch (e) {
+        //Handles errors with notify, which likely displays an error message.
         notify(AppConstants.ERROR, e);
       } finally {
+        //updates loading states setIsContainersLoading and setRequestLoading to false
         if (isContainersLoading) {
           setIsContainersLoading(false);
         }
@@ -144,9 +151,10 @@ export default function DataScreenTable() {
   useEffect(() => {
     return () => {
       clearShipmentManagementData();
+      //Calls clearShipmentManagementData to clear context data when the component unmounts.
     };
   }, []);
-
+  //When the containersList changes, the useEffect hook updates the filteredData state to either the containersList (if it has data) or an empty array.
   useEffect(() => {
     if (containersList.length > 0) {
       setFilteredData(containersList);
@@ -155,6 +163,7 @@ export default function DataScreenTable() {
     }
   }, [containersList]);
 
+  //handleRequestSort function is used to update the order and orderBy state when the user clicks on a column header to sort the table.
   const handleRequestSort = (property) => {
     let newOrder = "desc";
     if (orderBy === property && order === "desc") {
@@ -163,11 +172,12 @@ export default function DataScreenTable() {
     setOrder(newOrder);
     setOrderBy(property);
   };
-
+  //handleRequestSort function is used to update the order and orderBy state when the user clicks on a column header to sort the table.
   const sortedRows = (rows) => {
     return stableSort(rows, getComparator(order, orderBy));
   };
 
+  //helper function that searches the transporterList for a transporter with the given entityID and returns it. If not found, it returns null.
   const getTransporter = (value) => {
     for (const t of transporterList) {
       if (t.entityID === value) {
@@ -177,6 +187,7 @@ export default function DataScreenTable() {
     return null;
   };
 
+  //commented out currently. loadMoreData function is responsible for fetching and loading more data when the user clicks the "Load more" button.
   const loadMoreData = async () => {
     try {
       // setRequestLoading(true);
@@ -198,12 +209,14 @@ export default function DataScreenTable() {
     }
   };
 
+  //handleFilterHeaderDataChange function is used to update the filterHeaderData state when the user types in the filter input fields.
   const handleFilterHeaderDataChange = (column, value) => {
     setFilterHeaderData((prevData) => {
       return { ...prevData, [column]: value };
     });
   };
 
+  //Clears the filter value for a specific column by setting it to an empty string.
   const clearFilterHeaderData = (column) => {
     setFilterHeaderData((prevData) => {
       return { ...prevData, [column]: "" };
@@ -215,14 +228,14 @@ export default function DataScreenTable() {
       return;
     }
     setFilteredData(
-      getFilteredData(containersList, filterHeaderData, statusAttributes)
+      getFilteredData(containersList, filterHeaderData, statusAttributes) // to get the data that matches the filter criteria and updates the filteredData state.
     );
-  }, [filterHeaderData, containersList]);
+  }, [filterHeaderData, containersList]); //Whenever filterHeaderData or containersList changes, this effect is triggered
 
   return (
     // <Stack sx={{ width: "100%", alignItems: "center", overflowY: 'auto', ...ScrollbarDesign }} >
     <Stack sx={{ width: "100%", alignItems: "center", ...ScrollbarDesign }}>
-      <ActionButtonsGroup
+      <ActionButtonsGroup //Renders ActionButtonsGroup, passing isTableDense and setIsTableDense to manage whether the table is dense.
         isTableDense={isTableDense}
         setIsTableDense={setIsTableDense}
       />
@@ -243,6 +256,7 @@ export default function DataScreenTable() {
                         textAlign: "center",
                       }}
                     >
+                      {/* If a column is in FILTER_COLUMNS, it renders a TextField for filtering and includes an IconButton to clear the filter and another IconButton with a FilterListIcon. */}
                       {FILTER_COLUMNS.includes(column) && (
                         <Box sx={{ display: "flex", alignItems: "flex-end" }}>
                           <TextField
@@ -311,10 +325,10 @@ export default function DataScreenTable() {
                       textAlign: "center",
                     }}
                   >
-                    <TableSortLabel
-                      active={true}
-                      direction={orderBy === column ? order : "asc"}
-                      onClick={() => handleRequestSort(column)}
+                    <TableSortLabel //Wraps the column header text with a TableSortLabel to make it sortable
+                      active={true} //active prop determines if the column is currently the one being sorted.
+                      direction={orderBy === column ? order : "asc"} //sets the sorting direction.
+                      onClick={() => handleRequestSort(column)} // triggers sorting for the column using handleRequestSort
                       // style={{ color: 'white' }}
                       // sx={{ '& svg': { color: 'white !important' } }}
                     >
@@ -326,7 +340,7 @@ export default function DataScreenTable() {
             </TableHead>
 
             <TableBody>
-              {sortedRows(filteredData)
+              {sortedRows(filteredData) //Iterates over the sorted and filtered data to generate table rows
                 // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, rowIndex) => (
                   <TableRow
@@ -409,11 +423,11 @@ export default function DataScreenTable() {
           Total rows: {filteredData ? filteredData.length : 0}
         </Button>
         {paginationToken && (
-          <Button
+          <Button //button is disabled when requestLoading is true.
             variant="outlined"
             startIcon={<BrowserUpdatedIcon />}
             sx={{ marginRight: 1 }}
-            onClick={loadMoreData}
+            onClick={loadMoreData} //button's onClick triggers loadMoreData
             size="small"
           >
             Load more

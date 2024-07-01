@@ -9,7 +9,9 @@ import { useCallback } from "react";
 export default function StatusCountCard(props) {
   const { tmp, fieldname, count } = props;
   const { setDashboardLoading, setStatus } = useContext(AppContext);
+  //Uses useContext to access functions setDashboardLoading and setStatus from the AppContext.
   const navigate = useNavigate();
+  //handleTicketClick function to log a message and navigate to a specific data page with the status parameter when the card is clicked.
   const handleTicketClick = () => {
     console.log("Navigating to data page with status:", tmp);
     navigate(`/data?status=${tmp}`);
@@ -23,6 +25,7 @@ export default function StatusCountCard(props) {
         backgroundColor: `${AppTheme.secondary}`,
       }}
       onClick={handleTicketClick}
+      //Attaches an onClick event handler to trigger the handleTicketClick function when the card is clicked.
     >
       <CardContent
         sx={{
@@ -31,6 +34,7 @@ export default function StatusCountCard(props) {
           justifyContent: "space-between",
         }}
       >
+        {/* Typography components to display the fieldname and count information. */}
         <Typography
           sx={{
             whiteSpace: "nowrap",
